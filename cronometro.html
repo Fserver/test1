@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronómetro</title>
+</head>
+<body>
+    <h1>Cronómetro</h1>
+    
+    <div id="display">00:00:00</div>
+    
+    <br><br>
+    
+    <button id="btnIniciar">Iniciar</button>
+    <button id="btnPausar">Pausar</button>
+    <button id="btnReiniciar">Reiniciar</button>
+
+    <script>
+        let startTime = 0;
+        let elapsedTime = 0;
+        let timerInterval;
+        let isRunning = false;
+
+        const display = document.getElementById('display');
+        const btnIniciar = document.getElementById('btnIniciar');
+        const btnPausar = document.getElementById('btnPausar');
+        const btnReiniciar = document.getElementById('btnReiniciar');
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            return (
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0')
+            );
+        }
+
+        function updateDisplay() {
+            const currentTime = Date.now();
+            const totalTime = elapsedTime + (currentTime - startTime);
+            display.textContent = formatTime(totalTime);
+        }
+
+        function start() {
+            if (!isRunning) {
+                startTime = Date.now();
+                timerInterval = setInterval(updateDisplay, 10);
+                isRunning = true;
+            }
+        }
+
+        function pause() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                elapsedTime += Date.now() - startTime;
+                isRunning = false;
+            }
+        }
+
+        function reset() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            isRunning = false;
+            display.textContent = '00:00:00';
+        }
+
+        btnIniciar.addEventListener('click', start);
+        btnPausar.addEventListener('click', pause);
+        btnReiniciar.addEventListener('click', reset);
+    </script>
+</body>
+</html>
